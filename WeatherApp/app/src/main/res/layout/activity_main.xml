@@ -25,70 +25,72 @@
 
             <TextView
                 android:id="@+id/address"
-                android:textSize="24sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Location">
-            </TextView>
+                android:text="Location"
+                android:textSize="24sp"></TextView>
 
             <TextView
                 android:id="@+id/updated_at"
-                android:textSize="14sp"
-                android:text="Updated_at"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-            </TextView>
+                android:layout_height="wrap_content"
+                android:text="Updated_at"
+                android:textSize="14sp"></TextView>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:clickable="true"
+                app:srcCompat="@android:drawable/ic_menu_edit" />
+
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/overviewContainer"
-            android:orientation="vertical"
-            android:layout_centerInParent="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center">
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="vertical">
 
             <TextView
+                android:id="@+id/status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/status"
-                android:textSize="18sp"
-                android:text="Clear sky">
-            </TextView>
+                android:text="Clear sky"
+                android:textSize="18sp"></TextView>
 
             <TextView
                 android:id="@+id/temp"
-                android:textSize="90sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-thin"
                 android:text="24°C"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-            </TextView>
+                android:textSize="90sp"></TextView>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/temp_min"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Min temp">
-                </TextView>
+                    android:text="Min temp"></TextView>
 
                 <Space
                     android:layout_width="50dp"
-                    android:layout_height="wrap_content">
-                </Space>
+                    android:layout_height="wrap_content"></Space>
 
                 <TextView
                     android:id="@+id/temp_max"
-                    android:text="Max temp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                </TextView>
+                    android:layout_height="wrap_content"
+                    android:text="Max temp"></TextView>
 
             </LinearLayout>
 
@@ -368,214 +370,191 @@
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:columnCount="3"
             android:rowCount="2"
-            android:layout_alignParentBottom="true"
             android:useDefaultMargins="true">
 
             <LinearLayout
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
-                android:orientation="vertical"
+                android:background="#3CF1EBF1"
                 android:gravity="center"
-                android:background="#3CF1EBF1">
+                android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:src="@drawable/sunrise"
-                    android:tint="#FFF">
-                </ImageView>
+                    android:tint="#FFF"></ImageView>
 
                 <Space
                     android:layout_width="5dp"
-                    android:layout_height="wrap_content">
-                </Space>
+                    android:layout_height="wrap_content"></Space>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Sunrise"
-                    android:textSize="12sp">
-                </TextView>
+                    android:textSize="12sp"></TextView>
 
                 <TextView
                     android:id="@+id/sunrise"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="5:30am"
-                    android:textSize="14sp">
-                </TextView>
+                    android:textSize="14sp"></TextView>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
-                android:orientation="vertical"
+                android:background="#3CF1EBF1"
                 android:gravity="center"
-                android:background="#3CF1EBF1">
+                android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:src="@drawable/sunset"
-                    android:tint="#FFF">
-                </ImageView>
+                    android:tint="#FFF"></ImageView>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Sunset"
-                    android:textSize="12sp">
-                </TextView>
+                    android:textSize="12sp"></TextView>
 
                 <TextView
                     android:id="@+id/sunset"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="5:30am"
-                    android:textSize="14sp">
-                </TextView>
+                    android:textSize="14sp"></TextView>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
-                android:orientation="vertical"
+                android:background="#3CF1EBF1"
                 android:gravity="center"
-                android:background="#3CF1EBF1">
+                android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:src="@drawable/wind"
-                    android:tint="#FFF">
-                </ImageView>
+                    android:tint="#FFF"></ImageView>
 
                 <Space
                     android:layout_width="5dp"
-                    android:layout_height="wrap_content">
-                </Space>
+                    android:layout_height="wrap_content"></Space>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Wind"
-                    android:textSize="12sp">
-                </TextView>
+                    android:textSize="12sp"></TextView>
 
                 <TextView
                     android:id="@+id/wind"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="5:30am"
-                    android:textSize="14sp">
-                </TextView>
+                    android:textSize="14sp"></TextView>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
-                android:orientation="vertical"
+                android:background="#3CF1EBF1"
                 android:gravity="center"
-                android:background="#3CF1EBF1">
+                android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:src="@drawable/pressure"
-                    android:tint="#FFF">
-                </ImageView>
+                    android:tint="#FFF"></ImageView>
 
                 <Space
                     android:layout_width="5dp"
-                    android:layout_height="wrap_content">
-                </Space>
+                    android:layout_height="wrap_content"></Space>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Pressure"
-                    android:textSize="12sp">
-                </TextView>
+                    android:textSize="12sp"></TextView>
 
                 <TextView
                     android:id="@+id/pressure"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="5:30am"
-                    android:textSize="14sp">
-                </TextView>
+                    android:textSize="14sp"></TextView>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
-                android:orientation="vertical"
+                android:background="#3CF1EBF1"
                 android:gravity="center"
-                android:background="#3CF1EBF1">
+                android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:src="@drawable/humidity"
-                    android:tint="#FFF">
-                </ImageView>
+                    android:tint="#FFF"></ImageView>
 
                 <Space
                     android:layout_width="5dp"
-                    android:layout_height="wrap_content">
-                </Space>
+                    android:layout_height="wrap_content"></Space>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Humidity"
-                    android:textSize="12sp">
-                </TextView>
+                    android:textSize="12sp"></TextView>
 
                 <TextView
                     android:id="@+id/humidity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="5:30am"
-                    android:textSize="14sp">
-                </TextView>
+                    android:textSize="14sp"></TextView>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
-                android:orientation="vertical"
+                android:background="#3CF1EBF1"
                 android:gravity="center"
-                android:background="#3CF1EBF1">
+                android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:src="@drawable/info"
-                    android:tint="#FFF">
-                </ImageView>
+                    android:tint="#FFF"></ImageView>
 
                 <Space
                     android:layout_width="5dp"
-                    android:layout_height="wrap_content">
-                </Space>
+                    android:layout_height="wrap_content"></Space>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Created by"
-                    android:textSize="12sp">
-                </TextView>
+                    android:textSize="12sp"></TextView>
 
                 <TextView
                     android:id="@+id/info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Gleb"
-                    android:textSize="14sp">
-                </TextView>
+                    android:textSize="14sp"></TextView>
             </LinearLayout>
 
         </GridLayout>

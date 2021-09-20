@@ -4,8 +4,10 @@ import android.Manifest
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
@@ -16,13 +18,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import android.text.InputType
 import android.util.Log
 import android.view.Gravity.apply
 import android.view.View
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.getSystemService
 import com.android.volley.Request
@@ -53,9 +53,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var locationRequest: LocationRequest
     lateinit var locationCallback: LocationCallback
 
-    var latitude: String = ""
-    var longitude: String = ""
-    var city = ""
     /*
     private val locationCallBack: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
@@ -88,9 +85,36 @@ class MainActivity : AppCompatActivity() {
 
         try {
             fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
+            fab.setOnClickListener {
+                showDialog()
+            }
         } catch (ex: Exception) {
             Toast.makeText(applicationContext, ex.toString(), Toast.LENGTH_LONG).show()
         }
+
+    }
+
+    fun showDialog() {
+        val builder = AlertDialog.Builder(this, R.style.AlertDialog)
+        builder.setTitle("Enter a city name")
+
+        val input = EditText(this).apply {
+            setHint("City")
+            inputType = InputType.TYPE_CLASS_TEXT
+        }
+        builder.setView(input)
+
+        builder.setPositiveButton("OK", DialogInterface.OnClickListener{ dialog, which ->
+            var city = input.text.toString().trim()
+            weatherUrl = "https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=$api"
+            getWeather()
+        })
+
+        builder.setNegativeButton("Cancel", DialogInterface.OnClickListener{ dialog, which ->
+            dialog.cancel()
+        })
+
+        builder.show()
 
     }
 
@@ -140,6 +164,10 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
+            }
+        } catch (ex: Exception) {
+            Toast.makeText(applicationContext, ex.toString(), Toast.LENGTH_SHORT).show()
+        }
 
                 /*
                 val manager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -201,9 +229,65 @@ class MainActivity : AppCompatActivity() {
 
                            */
 
+
+    }
+
+
+
+    private fun getLocationUpdate() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(this, arrayOf(ACCESS_FINE_LOCATION), 1000)
+            return
+        } else {
+            val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+                    LocationManager.NETWORK_PROVIDER
+                )
+            ) {
+                fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
+                locationRequest = LocationRequest().apply {
+                    interval = 50000
+                    fastestInterval = 50000
+                    smallestDisplacement = 170f
+                    priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+                }
+
+                locationCallback = object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult?) {
+                        locationResult ?: showAlertLocation()
+                        if (locationResult!!.locations.isNotEmpty()) {
+                            val addresses: List<Address>?
+                            val geoCoder = Geocoder(applicationContext, Locale.getDefault())
+                            addresses = geoCoder.getFromLocation(
+                                locationResult.lastLocation.latitude,
+                                locationResult.lastLocation.longitude,
+                                1
+                            )
+                            if (addresses != null && addresses.isNotEmpty()) {
+                                val city = addresses[0].locality
+                                Log.e(
+                                    "location",
+                                    "$city "
+                                )
+                                weatherUrl = "https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=$api"
+                                Toast.makeText(applicationContext, weatherUrl, Toast.LENGTH_SHORT).show()
+                                getWeather()
+                            }
+
+                        }
+                    }
+                }
+            } else {
+                showAlertLocation()
             }
-        } catch (ex: Exception) {
-            Toast.makeText(applicationContext, ex.toString(), Toast.LENGTH_SHORT).show()
+
         }
     }
 
@@ -212,7 +296,7 @@ class MainActivity : AppCompatActivity() {
         val url: String = weatherUrl
         Toast.makeText(applicationContext, weatherUrl, Toast.LENGTH_SHORT).show()
         val request = StringRequest(Request.Method.GET, url,
-            Response.Listener<String> { response ->
+            { response ->
                 Log.e("lat", response.toString())
                 val jsonObj = JSONObject(response)
 
@@ -252,7 +336,7 @@ class MainActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.humidity).text = humidity
 
             },
-            Response.ErrorListener {
+            {
                 Toast.makeText(applicationContext, it.toString(), Toast.LENGTH_LONG).show()
             }
         )
@@ -261,40 +345,20 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun getLocationUpdate() {
-        fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
-        locationRequest = LocationRequest()
-        locationRequest.interval = 50000
-        locationRequest.fastestInterval = 50000
-        locationRequest.smallestDisplacement = 170f
-        locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult?) {
-                locationResult ?: return
-                if (locationResult.locations.isNotEmpty()) {
-                    val addresses: List<Address>?
-                    val geoCoder = Geocoder(applicationContext, Locale.getDefault())
-                    addresses = geoCoder.getFromLocation(
-                        locationResult.lastLocation.latitude,
-                        locationResult.lastLocation.longitude,
-                        1
-                    )
-                    if (addresses != null && addresses.isNotEmpty()) {
-                        val city = addresses[0].locality
-                        Log.e(
-                            "location",
-                            "$city "
-                        )
-                        weatherUrl = "https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=$api"
-                        Toast.makeText(applicationContext, weatherUrl, Toast.LENGTH_SHORT).show()
-                        getWeather()
-                    }
-
-                }
-            }
+    private fun showAlertLocation() {
+        val dialog = AlertDialog.Builder(this)
+        dialog.setMessage("Your location settings is set to off, Please enable location to use this application")
+        dialog.setPositiveButton("Settings") { _, _ ->
+            val myIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            startActivity(myIntent)
         }
-
+        dialog.setNegativeButton("Cancel") { _, _ ->
+            finish()
+        }
+        dialog.setCancelable(false)
+        dialog.show()
     }
+
 
 /*
     private fun requestLocation() {
@@ -435,19 +499,7 @@ class MainActivity : AppCompatActivity() {
         getLocationUpdate()
     }
 
-    private fun showAlertLocation() {
-        val dialog = AlertDialog.Builder(this)
-        dialog.setMessage("Your location settings is set to off, Please enable location to use this application")
-        dialog.setPositiveButton("Settings") { _, _ ->
-            val myIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            startActivity(myIntent)
-        }
-        dialog.setNegativeButton("Cancel") { _, _ ->
-            finish()
-        }
-        dialog.setCancelable(false)
-        dialog.show()
-    }
+
 
     fun getLocationUpdate() {
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
