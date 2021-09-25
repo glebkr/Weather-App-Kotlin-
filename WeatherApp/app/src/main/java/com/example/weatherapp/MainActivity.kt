@@ -26,6 +26,7 @@ import android.view.MenuItem
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -39,20 +40,33 @@ import com.android.volley.*
 
 class MainActivity : AppCompatActivity() {
 
-    val api: String = "06c921750b9a82d8f5d1294e1586276f"
-    var weatherUrl: String = ""
-    lateinit var fusedLocationProvider: FusedLocationProviderClient
-    lateinit var locationRequest: LocationRequest
-    lateinit var locationCallback: LocationCallback
+    private val api: String = "06c921750b9a82d8f5d1294e1586276f"
+    private var weatherUrl: String = ""
+    private lateinit var fusedLocationProvider: FusedLocationProviderClient
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
 
-    lateinit var sharedPrefs: SharedPreferences
+    private lateinit var sharedPrefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         try {
+            Toast.makeText(applicationContext, "Please wait...", Toast.LENGTH_SHORT).show()
+            fab.hide()
+            loadSwitch()
+        } catch (ex: Exception) {
+            Toast.makeText(applicationContext, "Something went wrong", Toast.LENGTH_LONG).show()
+        }
+    }
 
+    fun loadSwitch() {
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
+        var auto = sharedPrefs.getBoolean("auto", true)
+        var manual = sharedPrefs.getBoolean("manual", false)
+
+        if (auto) {
             if (ActivityCompat.checkSelfPermission(
                     this,
                     Manifest.permission.ACCESS_FINE_LOCATION
@@ -64,31 +78,22 @@ class MainActivity : AppCompatActivity() {
                 ActivityCompat.requestPermissions(this, arrayOf(ACCESS_FINE_LOCATION), 1000)
                 return
             } else {
-
-                loadData()
-
-                fab.setOnClickListener {
-                    showDialog()
-                }
-
-                /*
                 getLocationUpdate()
+                fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
                 fusedLocationProvider.requestLocationUpdates(
                     locationRequest,
                     locationCallback,
                     null
                 )
-
-                 */
             }
-            
-
-        } catch (ex: Exception) {
-            Toast.makeText(applicationContext, ex.toString(), Toast.LENGTH_LONG).show()
+        } else {
+            fab.show()
+            loadCity()
+            fab.setOnClickListener {
+                showDialog()
+            }
         }
-
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.settings_menu, menu)
@@ -101,7 +106,6 @@ class MainActivity : AppCompatActivity() {
                 menuItem.title = spannable
             }
         }
-
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -112,14 +116,16 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun saveData(city: String) {
+    fun saveCity(city: String) {
         sharedPrefs = getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
+
         val editor = sharedPrefs.edit()
         editor.putString("City", city)
         editor.apply()
     }
 
-    fun loadData() {
+
+    fun loadCity() {
         sharedPrefs = getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
         val savedCity = sharedPrefs.getString("City", null)
         weatherUrl = "https://api.openweathermap.org/data/2.5/weather?q=${savedCity}&units=metric&appid=$api"
@@ -139,12 +145,17 @@ class MainActivity : AppCompatActivity() {
         builder.setView(input)
 
         builder.setPositiveButton("OK", DialogInterface.OnClickListener{ dialog, which ->
-            var city = input.text.toString().trim()
-            weatherUrl = "https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=$api"
-            getWeather()
-            saveData(city)
-
-
+            try {
+                var city = input.text.toString().trim()
+                if (city != null && city != "") {
+                    weatherUrl =
+                        "https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=$api"
+                    getWeather()
+                    saveCity(city)
+                }
+            } catch (ex: Exception) {
+                Toast.makeText(applicationContext, "Enter correct city", Toast.LENGTH_SHORT).show()
+            }
         })
 
         builder.setNegativeButton("Cancel", DialogInterface.OnClickListener{ dialog, which ->
@@ -152,7 +163,6 @@ class MainActivity : AppCompatActivity() {
         })
 
         builder.show()
-
     }
 
 
@@ -199,8 +209,8 @@ class MainActivity : AppCompatActivity() {
                                     "$city "
                                 )
                                 weatherUrl = "https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=$api"
-                                Toast.makeText(applicationContext, weatherUrl, Toast.LENGTH_SHORT).show()
                                 getWeather()
+                                saveCity(city)
                             }
 
                         }
@@ -216,7 +226,6 @@ class MainActivity : AppCompatActivity() {
     private fun getWeather() {
         val queue = Volley.newRequestQueue(this)
         val url: String = weatherUrl
-        Toast.makeText(applicationContext, weatherUrl, Toast.LENGTH_SHORT).show()
         val request = StringRequest(Request.Method.GET, url,
             { response ->
                 Log.e("lat", response.toString())
@@ -280,46 +289,6 @@ class MainActivity : AppCompatActivity() {
         dialog.setCancelable(false)
         dialog.show()
     }
-
-
-    private fun startLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(this, arrayOf(ACCESS_FINE_LOCATION),101)
-            return
-        }
-
-    }
-
-
-
-    /*
-    override fun onResume() {
-        super.onResume()
-        startLocationUpdates()
-    }
-
-
-
-
-    private fun stopLocationUpdates() {
-        fusedLocationProvider.removeLocationUpdates(locationCallback)
-    }
-
-
-    override fun onPause() {
-        super.onPause()
-        stopLocationUpdates()
-    }
-
-
-     */
 
 }
 

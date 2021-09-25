@@ -1,8 +1,11 @@
 package com.example.weatherapp
 
 import android.os.Bundle
+import android.preference.SwitchPreference
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreferenceCompat
 
 class SettingsActivity : AppCompatActivity() {
 

@@ -1,16 +1,17 @@
-<PreferenceScreen
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
         app:title="Choose a way to get the weather">
 
         <SwitchPreferenceCompat
+            android:id="@+id/autoSwitch"
+            app:defaultValue="true"
             app:key="auto"
-            app:title="Automatically"
-            app:defaultValue="true">
-        </SwitchPreferenceCompat>
+            app:title="Automatically" />
 
         <SwitchPreferenceCompat
+            android:id="@+id/manualSwitch"
             app:key="manual"
             app:title="Manually"
             app:defaultValue="false">
