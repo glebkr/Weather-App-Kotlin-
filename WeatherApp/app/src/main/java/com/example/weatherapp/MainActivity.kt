@@ -40,12 +40,12 @@ import com.android.volley.*
 
 class MainActivity : AppCompatActivity() {
 
-    private val api: String = "06c921750b9a82d8f5d1294e1586276f"
-    private var weatherUrl: String = ""
+    val api: String = "06c921750b9a82d8f5d1294e1586276f"
+    var weatherUrl: String = ""
     private lateinit var fusedLocationProvider: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
-
+    
     private lateinit var sharedPrefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +55,6 @@ class MainActivity : AppCompatActivity() {
         try {
             Toast.makeText(applicationContext, "Please wait...", Toast.LENGTH_SHORT).show()
             fab.hide()
-            loadSwitch()
         } catch (ex: Exception) {
             Toast.makeText(applicationContext, "Something went wrong", Toast.LENGTH_LONG).show()
         }
@@ -64,7 +63,6 @@ class MainActivity : AppCompatActivity() {
     fun loadSwitch() {
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
         var auto = sharedPrefs.getBoolean("auto", true)
-        var manual = sharedPrefs.getBoolean("manual", false)
 
         if (auto) {
             if (ActivityCompat.checkSelfPermission(
@@ -116,12 +114,13 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun saveCity(city: String) {
+    public fun saveCity(city: String) {
         sharedPrefs = getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
 
-        val editor = sharedPrefs.edit()
-        editor.putString("City", city)
-        editor.apply()
+        val editor = sharedPrefs.edit().apply() {
+            putString("City", city)
+            apply()
+        }
     }
 
 
@@ -223,7 +222,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getWeather() {
+    fun getWeather() {
         val queue = Volley.newRequestQueue(this)
         val url: String = weatherUrl
         val request = StringRequest(Request.Method.GET, url,
@@ -290,6 +289,11 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        loadSwitch()
+    }
 }
 
 

@@ -5,18 +5,11 @@
         app:title="Choose a way to get the weather">
 
         <SwitchPreferenceCompat
-            android:id="@+id/autoSwitch"
+            android:id="@+id/Switch"
             app:defaultValue="true"
             app:key="auto"
-            app:title="Automatically" />
-
-        <SwitchPreferenceCompat
-            android:id="@+id/manualSwitch"
-            app:key="manual"
-            app:title="Manually"
-            app:defaultValue="false">
-        </SwitchPreferenceCompat>
-
+            app:title="Automatically"
+            />
     </PreferenceCategory>
 
 </PreferenceScreen>
