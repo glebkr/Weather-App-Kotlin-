@@ -38,7 +38,7 @@ class SettingsActivity : AppCompatActivity() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
             var switch: SwitchPreferenceCompat? = findPreference<SwitchPreferenceCompat>(R.id.Switch.toString())
-
+            //button.text = button.isEnabled.toString()
         }
     }
 

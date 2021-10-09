@@ -25,6 +25,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.*
 import androidx.core.app.ActivityCompat
+import androidx.core.widget.TextViewOnReceiveContentListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.android.volley.Request
@@ -37,6 +38,9 @@ import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import com.android.volley.*
+import com.example.weatherapp.db.WeatherEntity
+import com.example.weatherapp.db.WeatherViewModel
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
@@ -52,12 +56,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        try {
-            Toast.makeText(applicationContext, "Please wait...", Toast.LENGTH_SHORT).show()
-            fab.hide()
-        } catch (ex: Exception) {
-            Toast.makeText(applicationContext, "Something went wrong", Toast.LENGTH_LONG).show()
-        }
+        var viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
+        var a = viewModel.getCapitals()
+
+
+
     }
 
     fun loadSwitch() {
@@ -292,7 +295,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        loadSwitch()
+
+        try {
+            Toast.makeText(applicationContext, "Please wait...", Toast.LENGTH_SHORT).show()
+            fab.hide()
+            loadSwitch()
+        } catch (ex: Exception) {
+            Toast.makeText(applicationContext, "Something went wrong", Toast.LENGTH_LONG).show()
+        }
     }
 }
 

@@ -2,28 +2,33 @@ package com.example.weatherapp
 
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import android.widget.SearchView
+import android.widget.*
+import androidx.lifecycle.ViewModelProvider
+import com.example.weatherapp.db.WeatherEntity
+import com.example.weatherapp.db.WeatherViewModel
 
 class SearchActivity : AppCompatActivity() {
     lateinit var searchView: SearchView
     lateinit var listView: ListView
-    var cities = listOf("Minsk", "London", "Moscow", "Washington")
+    var cities = listOf("Minsk", "London", "Moscow", "Washington", "Tirana", "Baku", "Vienna", "Paris", "Brussels",
+        "Sofia", "Riga", "Vaduz", "Vilnius", "Luxembourg", "Valletta", "Monaco", "Amsterdam", "Oslo", "Warsaw", "Lisbon",
+    "Bucharest", "San Marino", "Bratislava", "Ankara", "Kiev", "Vatican", "Stockholm", "Madrid", "Belgrade", "Bern", "Ljubljana",
+    "Skopje", "Podgorica", "Chisinau", "Vaduz", "Yerevan", "Andorra la Vella", "Sarajevo", "Prague", "Tallinn", "Helsinki",
+    "Tbilisi", "Berlin", "Athens", "Budapest", "Reykjavik", "Rome", "Pristina", "Copenhagen", "Zagreb", "Nicosia", "Nur-Sultan")
     lateinit var adapter: ArrayAdapter<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         listView = findViewById(R.id.listView)
         searchView = findViewById(R.id.searchView)
         adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, cities.sorted())
         listView.adapter = adapter
-
         listView.setOnItemClickListener(object : AdapterView.OnItemClickListener {
             override fun onItemClick(
                 parent: AdapterView<*>?,
@@ -31,7 +36,7 @@ class SearchActivity : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
-               var value = adapter.getItem(position)
+               val value = adapter.getItem(position)
                 searchView.setQuery(value, false)
                 listView.visibility = View.GONE
             }
@@ -44,7 +49,7 @@ class SearchActivity : AppCompatActivity() {
                 return false
             }
 
-            override fun onQueryTextSubmit(text: String?): Boolean {
+            override fun onQueryTextSubmit(text: String): Boolean {
                 if (cities.contains(text)) {
                     var sharedPrefs = getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
                     sharedPrefs.edit().apply {
@@ -53,6 +58,8 @@ class SearchActivity : AppCompatActivity() {
                     }
                     var intent = Intent(applicationContext, MainActivity::class.java)
                     startActivity(intent)
+                } else {
+                    Toast.makeText(applicationContext, "Enter the correct city name", Toast.LENGTH_SHORT).show()
                 }
                 return false
             }
