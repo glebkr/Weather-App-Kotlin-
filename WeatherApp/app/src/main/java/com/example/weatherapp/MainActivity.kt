@@ -11,7 +11,6 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
-import android.location.Location
 import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle
@@ -21,11 +20,9 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.*
 import androidx.core.app.ActivityCompat
-import androidx.core.widget.TextViewOnReceiveContentListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.android.volley.Request
@@ -38,9 +35,6 @@ import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import com.android.volley.*
-import com.example.weatherapp.db.WeatherEntity
-import com.example.weatherapp.db.WeatherViewModel
-import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
